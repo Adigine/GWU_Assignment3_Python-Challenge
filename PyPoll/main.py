@@ -18,16 +18,37 @@ with open(csvpath, newline='') as csvfile:
     totalVotes = sum(1 for row in vote)
     print(f"Total votes: {totalVotes}")
 
+    #generating candidate list
     candidateList = []
     for row in vote:
         if row[2] not in candidateList:
             candidateList.append(row[2])
-    print(candidateList)
+    #print(candidateList)
 
+    #setting loop and variables
+    plurality = 0
+    winner = None
     for candidate in candidateList:
+        voteCount = 0
+
+        #vote count/percentage per candidate
         for row in vote:
             if row[2] == candidate:
-                print(candidateList[x])
+                voteCount += 1
+        print(f"{candidate}: {round((voteCount / totalVotes) * 100, 4)}% ({voteCount})")
+
+        #vote outcome with a 0.5% margin that would trigger a recount in a real world scenario
+        if voteCount > (plurality + (plurality * 0.005)):
+            plurality = voteCount
+            winner = candidate
+        elif voteCount < (plurality - (plurality * 0.005)):
+            pass
+        else:
+            print("Recount necessary.")
+
+    print("-------------------------")
+    print(f"Winner: {winner}")
+    print("-------------------------")
 
 
 
