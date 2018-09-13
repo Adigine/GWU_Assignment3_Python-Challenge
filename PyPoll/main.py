@@ -1,22 +1,19 @@
 import os
 import csv
-import sys
 
 csvpath = os.path.join("..", "..", "..", "..", "..", "gitlab", "GWARL201808DATA3", "03-Python", "Homework", "Instructions", "PyPoll", "Resources", "election_data.csv")
 
 with open(csvpath, newline='') as csvfile:
     votes = csv.reader(csvfile, delimiter=',')
     header = next(votes, None)
-    print(header)
-    print("Election Results")
-    print("-------------------------")
+    #print(header)
+
 
     # Defining rows and casting columns because I was getting null values
     vote = [[int(row[0]), row[1], row[2]] for row in votes]
 
     #total count of votes
     totalVotes = sum(1 for row in vote)
-    print(f"Total votes: {totalVotes}")
 
     #generating candidate list
     candidateList = []
@@ -28,6 +25,10 @@ with open(csvpath, newline='') as csvfile:
     #setting loop and variables
     plurality = 0
     winner = None
+
+    # creating an empty set so that i can append each candidate's result for print and export later
+    candidates = []
+    i = 0
     for candidate in candidateList:
         voteCount = 0
 
@@ -35,25 +36,42 @@ with open(csvpath, newline='') as csvfile:
         for row in vote:
             if row[2] == candidate:
                 voteCount += 1
-        print(f"{candidate}: {round((voteCount / totalVotes) * 100, 4)}% ({voteCount})")
+        candidates.append(f"{candidate}: {round((voteCount / totalVotes) * 100, 4)}% ({voteCount})")
+        i += 1
 
         #vote outcome with a 0.5% margin that would trigger a recount in a real world scenario
         if voteCount > (plurality + (plurality * 0.005)):
             plurality = voteCount
+            recount = False
             winner = candidate
         elif voteCount < (plurality - (plurality * 0.005)):
             pass
         else:
-            print("Recount necessary.")
+            recount = True
 
-    print("-------------------------")
+print("Election Results")
+print("-------------------------")
+print(f"Total votes: {totalVotes}")
+print("-------------------------")
+for x in range(i):
+    print(candidates[x])
+print("-------------------------")
+if recount == False:
     print(f"Winner: {winner}")
-    print("-------------------------")
+else:
+    print("Recount necessary")
+print("-------------------------")
 
-
-
-
-#Exporting output to txt
-# sys.stdout = open('Financial_Analysis.txt', 'w')
-# print(f"")
-# sys.stdout.close()
+with open('Election_Results.txt', 'w') as filewriter:
+    filewriter.write("Election Results\n")
+    filewriter.write("-------------------------\n")
+    filewriter.write(f"Total votes: {totalVotes}\n")
+    filewriter.write("-------------------------\n")
+    for x in range(i):
+        filewriter.write(f"{candidates[x]}\n")
+    filewriter.write("-------------------------\n")
+    if recount == False:
+        filewriter.write(f"Winner: {winner}\n")
+    else:
+        filewriter.write("Recount necessary\n")
+    filewriter.write("-------------------------\n")

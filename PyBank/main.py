@@ -32,7 +32,7 @@ with open(csvpath, newline='') as csvfile:
 
     #Finding month to month change
     for row in months:
-        if prev != 0:
+        if prev != 0: #avoiding treating first month as an increase from zero value
             monthChange = row[1] - prev
         prev = row[1]
 
@@ -51,7 +51,7 @@ with open(csvpath, newline='') as csvfile:
         sumChange += monthChange
 
     # Average change
-    aveChange = sumChange / (totalMonths-1)
+    aveChange = round(sumChange / (totalMonths-1), 2)
     print(f"Average  Change: ${aveChange}")
 
     #remaining console print
@@ -59,12 +59,11 @@ with open(csvpath, newline='') as csvfile:
     print(f"Greatest Decrease in Profits: {maxMonthDecr} (${maxDecrease})")
 
 #Exporting output to txt
-sys.stdout = open('Financial_Analysis.txt', 'w')
-print("Financial Analysis")
-print("____________________________________")
-print(f"Total Months: {totalMonths}")
-print(f"Net Profit/Losses: ${netProfit}")
-print(f"Average  Change: ${aveChange}")
-print(f"Greatest Increase in Profits: {maxMonthIncr} (${maxIncrease})")
-print(f"Greatest Decrease in Profits: {maxMonthDecr} (${maxDecrease})")
-sys.stdout.close()
+with open('Financial_Analysis.txt', 'w', newline="") as filewriter:
+    filewriter.write("Financial Analysis\n")
+    filewriter.write("____________________________________\n")
+    filewriter.write(f"Total Months: {totalMonths}\n")
+    filewriter.write(f"Net Profit/Losses: ${netProfit}\n")
+    filewriter.write(f"Average  Change: ${aveChange}\n")
+    filewriter.write(f"Greatest Increase in Profits: {maxMonthIncr} (${maxIncrease})\n")
+    filewriter.write(f"Greatest Decrease in Profits: {maxMonthDecr} (${maxDecrease})\n")
