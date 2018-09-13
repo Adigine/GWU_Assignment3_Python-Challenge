@@ -1,6 +1,5 @@
 import os
 import csv
-import sys
 
 csvpath = os.path.join("..", "..", "..", "..", "..", "gitlab", "GWARL201808DATA3", "03-Python", "Homework", "Instructions", "PyBank", "Resources", "budget_data.csv")
 
